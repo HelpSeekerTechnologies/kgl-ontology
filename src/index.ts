@@ -40,23 +40,33 @@ export type {
 
 export type { RuleDefinition } from './core/RuleRegistry';
 
-// Ontology data and types
+// Ontology data exports
 export {
-  CANONICAL_ONTOLOGY,
   KGL_RULES_DEFINITIONS,
-  ALL_CANONICAL_HANDLES,
-  ALL_COMPOUND_HANDLES,
-  ALL_TYPE_TAXONOMY_HANDLES,
-  NODE_COMBINABILITY,
-  MODIFIER_HANDLES,
+  KGL_BRAND_ASSETS,
+  KGL_SYSTEM_PROMPT_V1_3,
 } from './ontology/canonicalData';
 
+export {
+  KGL_NODES,
+  CANONICAL_HANDLES,
+  MODIFIER_HANDLES,
+  KGL_TYPE_TAXONOMIES,
+  KGL_COMPOUND_RELATIONSHIPS,
+  getNodeByHandle,
+  getNodesByCategory,
+  isModifierHandle,
+  isModifierValidForNode,
+  getValidModifiersForNode,
+} from './ontology/canonicalOntology';
+
+// Re-export all types
 export type {
-  NodeDefinition,
+  KGLNode,
+  KGLRule,
+  KGLTypeTaxonomy,
+  KGLCompoundRelationship,
   NodeCategory,
-  ModifierType,
-  CompoundDefinition,
-  TaxonomyDefinition,
   RuleCategory,
 } from './ontology/types';
 
@@ -65,5 +75,5 @@ export type {
   BaseModule,
   ObjectModule,
   TaxonomyModule,
-  FieldDefinition,
+  ModuleField,
 } from './types';
