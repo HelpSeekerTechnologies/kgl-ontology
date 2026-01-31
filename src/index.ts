@@ -77,3 +77,14 @@ export type {
   TaxonomyModule,
   ModuleField,
 } from './types';
+
+// Validators & Enforcers
+export {
+  default as KGLEnforcer,
+  KGL_V1_3_NODES,
+  GLYPH_TO_HANDLE,
+} from './validators/kgl-enforcer';
+
+export {
+  default as KGLNeo4jValidator,
+} from './validators/kgl-neo4j-validator';
