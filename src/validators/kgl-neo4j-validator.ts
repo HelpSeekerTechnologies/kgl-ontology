@@ -224,11 +224,15 @@ export class KGLNeo4jValidator {
 async function main() {
   const args = process.argv.slice(2);
 
-  // Default config - update with your credentials
+  // Get config from environment variables (REQUIRED)
+  if (!process.env.NEO4J_URI || !process.env.NEO4J_USER || !process.env.NEO4J_PASSWORD) {
+    throw new Error('Missing required environment variables: NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD');
+  }
+
   const config: Neo4jConfig = {
-    uri: process.env.NEO4J_URI || 'neo4j+s://d3b8540d.databases.neo4j.io',
-    user: process.env.NEO4J_USER || 'neo4j',
-    password: process.env.NEO4J_PASSWORD || '8iwurGXsN3ubfRMA_He500iY4vRe3L9qkR9_LATrJsg',
+    uri: process.env.NEO4J_URI,
+    user: process.env.NEO4J_USER,
+    password: process.env.NEO4J_PASSWORD,
   };
 
   const validator = new KGLNeo4jValidator(config);
