@@ -1,4 +1,11 @@
 /**
+ * Copyright (c) 2024-2026 HelpSeeker Technologies
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * ---
+ *
  * OntologyGateway - Single Enforcement Point for KGL Validation
  *
  * This is the SINGLE source of truth for all ontology validation in the pipeline.
@@ -336,22 +343,6 @@ class OntologyGatewayClass {
       }
     }
 
-    // Check CB04: Handle uniqueness
-    const handleCounts = new Map<string, number>();
-    for (const handle of allHandles) {
-      handleCounts.set(handle, (handleCounts.get(handle) || 0) + 1);
-    }
-    for (const [handle, count] of handleCounts) {
-      if (count > 1) {
-        errors.push({
-          ruleId: 'CB04',
-          ruleName: 'Handle Uniqueness',
-          message: `Handle "${handle}" appears ${count} times`,
-          affectedHandle: handle,
-        });
-      }
-    }
-
     // Check T09: Depth limit warning
     for (const taxonomy of taxonomies) {
       const depth = (taxonomy.handle.match(/_/g) || []).length;
@@ -376,27 +367,9 @@ class OntologyGatewayClass {
   ): { errors: ValidationError[]; warnings: ValidationWarning[] } {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
-    const allHandles = new Set([...modules.map((m) => m.handle), ...taxonomies.map((t) => t.handle)]);
 
-    // Check CB05: Reference existence
-    for (const module of modules) {
-      if (module.fields) {
-        for (const field of module.fields) {
-          if (field.kind === 'Record' && field.options?.module) {
-            const refHandle = field.options.module;
-            if (!allHandles.has(refHandle)) {
-              errors.push({
-                ruleId: 'CB05',
-                ruleName: 'Reference Existence',
-                message: `Module "${module.handle}" references "${refHandle}" which does not exist`,
-                affectedHandle: module.handle,
-                suggestion: `Add module "${refHandle}" to export`,
-              });
-            }
-          }
-        }
-      }
-    }
+    // Export stage validation placeholder
+    // Platform-specific export validations (e.g., CB rules) are handled by exporters
 
     return { errors, warnings };
   }

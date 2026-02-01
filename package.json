@@ -1,7 +1,7 @@
 {
   "name": "@helpseeker/kgl-ontology",
   "version": "1.3.0",
-  "description": "KGL (Kompas Glyph Language) v1.3 Ontology - A universal data modeling language with 45 canonical nodes, 7 modifiers, and 55 validation rules",
+  "description": "KGL (Kompas Glyph Language) v1.3 Ontology - A universal data modeling language with 45 canonical nodes, 7 modifiers, and 41 universal validation rules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

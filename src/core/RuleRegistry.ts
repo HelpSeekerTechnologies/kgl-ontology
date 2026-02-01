@@ -1,7 +1,15 @@
 /**
- * RuleRegistry - Single Source of Truth for KGL Rules
+ * Copyright (c) 2024-2026 HelpSeeker Technologies
  *
- * This module provides centralized access to all 55 KGL rule definitions.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * ---
+ *
+ * RuleRegistry - Single Source of Truth for Universal KGL Rules
+ *
+ * This module provides centralized access to all 41 universal KGL rule definitions.
+ * These rules define what valid KGL is, independent of deployment platform.
  * Validators MUST import rule definitions from here, not hardcode them.
  *
  * Rule Categories:
@@ -10,7 +18,10 @@
  * - M01-M04: Modifier pattern rules
  * - S01-S05: Selection rules
  * - N01-N07: Normalization rules
- * - CB01-CB14: Corteza Build rules
+ *
+ * Platform-Specific Rules (not included here):
+ * - CB01-CB14: Corteza Build rules → @helpseeker/data-model-generator/CortezaValidator
+ * - Future: PostgreSQL rules, Salesforce rules, etc.
  */
 
 import { KGL_RULES_DEFINITIONS } from '../ontology/canonicalData';
@@ -155,12 +166,6 @@ class RuleRegistryClass {
     return this.getRulesByPrefix('N');
   }
 
-  /**
-   * Get Corteza build rules (CB01-CB14)
-   */
-  getCortezaBuildRules(): RuleDefinition[] {
-    return this.getRulesByPrefix('CB');
-  }
 
   /**
    * Validate that a validator's ruleId exists in the registry
@@ -180,7 +185,7 @@ class RuleRegistryClass {
    * Export rules as markdown for context priming
    */
   exportAsMarkdown(): string {
-    const lines: string[] = ['# KGL Rules Reference (55 Rules)', ''];
+    const lines: string[] = ['# KGL Rules Reference (41 Universal Rules)', ''];
 
     const categories: { prefix: string; title: string; description: string }[] = [
       { prefix: 'R', title: 'Semantic & Structural Rules (R01-R16)', description: 'Core ontology grammar and semantic coherence' },
@@ -188,7 +193,6 @@ class RuleRegistryClass {
       { prefix: 'M', title: 'Modifier Pattern Rules (M01-M04)', description: 'Rules for all 7 modifiers (type, status, condition, characteristic, role, capacity, limitation)' },
       { prefix: 'S', title: 'Selection Rules (S01-S05)', description: 'Use case compound selection guidance' },
       { prefix: 'N', title: 'Normalization Rules (N01-N07)', description: 'Cross-jurisdiction data alignment' },
-      { prefix: 'CB', title: 'Corteza Build Rules (CB01-CB14)', description: 'Platform-specific implementation' },
     ];
 
     for (const cat of categories) {

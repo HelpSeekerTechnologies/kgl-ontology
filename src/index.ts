@@ -1,4 +1,11 @@
 /**
+ * Copyright (c) 2024-2026 HelpSeeker Technologies
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * ---
+ *
  * KGL (Kompas Glyph Language) v1.3 Ontology
  *
  * A universal data modeling language for social services and case management.
@@ -6,7 +13,7 @@
  * Core Components:
  * - 45 Canonical Nodes (spine, legal, clinical, personal, operational)
  * - 7 Modifiers (type, status, condition, characteristic, role, capacity, limitation)
- * - 55 Validation Rules (semantic, taxonomy, modifier, selection, normalization, build)
+ * - 41 Universal Validation Rules (semantic, taxonomy, modifier, selection, normalization)
  *
  * Architecture:
  * - OntologyRegistry: Access to nodes, compounds, taxonomies

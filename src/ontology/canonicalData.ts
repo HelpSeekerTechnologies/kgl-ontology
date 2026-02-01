@@ -2,13 +2,17 @@
  * KGL Canonical Data - Rules, Mappings, Stories, and Reference Data
  *
  * This file contains the static reference data for the KGL ontology including:
- * - Rules (R1-R16, CB01-CB32)
+ * - Universal Rules (R01-R16, T01-T10, M01-M04, S01-S05, N01-N07)
  * - Concept mappings for AI extraction
  * - Domain descriptions
  * - Story types and risk patterns
  * - Data types and normalization patterns
  * - Forecast playbook stages
  * - System prompts
+ *
+ * Note: Platform-specific rules (e.g., Corteza Build Rules) have been moved to
+ * their respective exporters in @helpseeker/data-model-generator to maintain
+ * platform-agnostic ontology architecture.
  */
 
 import {
@@ -42,8 +46,10 @@ export const KGL_BRAND_ASSETS = {
 };
 
 // ============================================================================
-// KGL RULES DEFINITIONS - 55 Rules Organized by Category
+// KGL RULES DEFINITIONS - 41 Universal Rules
 // ============================================================================
+//
+// These rules define what valid KGL is, independent of deployment platform.
 //
 // Categories:
 // - R01-R16: Semantic & Structural Rules (ontology grammar)
@@ -51,7 +57,10 @@ export const KGL_BRAND_ASSETS = {
 // - M01-M04: Modifier Pattern Rules (applies to all 7 modifiers)
 // - S01-S05: Selection Rules (use case compound selection)
 // - N01-N07: Normalization Rules (cross-jurisdiction alignment)
-// - CB01-CB14: Corteza Build Rules (platform-specific)
+//
+// Platform-Specific Rules (moved to respective exporters):
+// - CB01-CB14: Corteza Build Rules → @helpseeker/data-model-generator/CortezaValidator
+// - Future: PostgreSQL rules, Salesforce rules, etc.
 //
 // ============================================================================
 
@@ -128,26 +137,6 @@ export const KGL_RULES_DEFINITIONS: KGLRule[] = [
     { id: 'N05', category: 'Normalization', name: 'Comparability score', description: 'Include confidence measure (0.0-1.0) for imperfect cross-jurisdictional matches.', exampleWrong: 'Treating all normalizations as equally reliable', exampleCorrect: 'comparability_score=0.85 (indicating 85% confidence in mapping)', errorIfViolated: 'No indication of normalization quality' },
     { id: 'N06', category: 'Normalization', name: 'Source preservation', description: 'Always preserve original source_code. Normalization adds normalized value, never replaces original.', exampleWrong: 'Overwriting source value with normalized value', exampleCorrect: 'source_code="RURAL_BC", normalized_code="RURAL_STANDARD", both preserved', errorIfViolated: 'Loss of original source data' },
     { id: 'N07', category: 'Normalization', name: 'Jurisdiction reference', description: 'Every normalization compound must FK to geography_type_jurisdiction identifying source system.', exampleWrong: 'Normalization without jurisdiction context', exampleCorrect: 'normalization-geography_type_jurisdiction (FK to BC, AB, ON, etc.)', errorIfViolated: 'Cannot identify source of normalized data' },
-
-    // =========================================================================
-    // CB01-CB14: CORTEZA BUILD RULES
-    // =========================================================================
-    // These rules are specific to Corteza platform implementation.
-
-    { id: 'CB01', category: 'Corteza Build', name: 'Handle format', description: 'Module handles must be lowercase with underscores only. No uppercase, hyphens, or special characters.', exampleWrong: 'Person-Case, personCase, person.case', exampleCorrect: 'person_case', errorIfViolated: 'Invalid handle; Corteza import failure' },
-    { id: 'CB02', category: 'Corteza Build', name: 'Exclude system fields', description: 'Corteza auto-generates: recordID, ownedBy, createdBy, createdAt, updatedBy, updatedAt, revision, deletedBy, deletedAt. Do not include these in schemas.', exampleWrong: 'Including person_created_at, person_updated_at in field list', exampleCorrect: 'Omit entirely - Corteza creates automatically', errorIfViolated: 'Redundant fields; potential conflicts' },
-    { id: 'CB03', category: 'Corteza Build', name: 'Field uniqueness', description: 'Field names must be unique within a module. Use hyphen prefix for FK fields to distinguish from data fields.', exampleWrong: 'program_capacity (Number) and program_capacity (Record) in same module', exampleCorrect: 'program_capacity (Number) and program-capacity (Record FK)', errorIfViolated: 'Field name collision; import failure' },
-    { id: 'CB04', category: 'Corteza Build', name: 'Handle uniqueness', description: 'All module handles must be globally unique across the namespace.', exampleWrong: 'Two modules both named "status"', exampleCorrect: 'status, person_status, case_status (all unique)', errorIfViolated: 'Handle collision; import failure' },
-    { id: 'CB05', category: 'Corteza Build', name: 'Reference existence', description: 'Referenced module must exist before referencing module. FK targets must be defined.', exampleWrong: 'person-case field but case module not included', exampleCorrect: 'Include case module in export before person module', errorIfViolated: 'Invalid module reference; broken FK' },
-    { id: 'CB06', category: 'Corteza Build', name: 'Record field options', description: 'Use "module" key in Record field options, not "moduleID".', exampleWrong: '{"options": {"moduleID": "person"}}', exampleCorrect: '{"options": {"module": "person"}}', errorIfViolated: 'Invalid CortezaID; FK not resolved' },
-    { id: 'CB07', category: 'Corteza Build', name: 'Required fields', description: 'Mark ID and critical FK fields as required.', exampleWrong: '{"name": "person_id", "kind": "String"}', exampleCorrect: '{"name": "person_id", "kind": "String", "isRequired": true}', errorIfViolated: 'Data integrity issues; missing required values' },
-    { id: 'CB08', category: 'Corteza Build', name: 'Data type mapping', description: 'Map KGL data types to Corteza kinds: String, Number, DateTime, Bool, Record, Select.', exampleWrong: 'kind: "UUID" or kind: "Integer"', exampleCorrect: 'kind: "String" (for UUIDs), kind: "Number" (for integers)', errorIfViolated: 'Invalid field type; import failure' },
-    { id: 'CB09', category: 'Corteza Build', name: 'Label length', description: 'Labels must not exceed 64 characters.', exampleWrong: 'Very long label exceeding 64 characters that describes every detail...', exampleCorrect: 'Concise, clear label under 64 chars', errorIfViolated: 'Label truncation; display issues' },
-    { id: 'CB10', category: 'Corteza Build', name: 'JSON structure', description: 'Correct Corteza export format with type and list keys.', exampleWrong: '{"modules": [...]}', exampleCorrect: '{"type": "module", "list": [...]}', errorIfViolated: 'Import format error; file rejected' },
-    { id: 'CB11', category: 'Corteza Build', name: 'Compound module creation', description: 'Create compound module for scoped relationships. FK references point to compound, not base node.', exampleWrong: 'person-person_status references "status" module directly', exampleCorrect: 'person-person_status references "person_status" compound module', errorIfViolated: 'Missing module; broken reference' },
-    { id: 'CB12', category: 'Corteza Build', name: 'Compound structure', description: 'Standard compound module fields: _id, FKs to both nodes, FK to type taxonomy, dates, notes.', exampleWrong: 'case_condition with only _id field', exampleCorrect: 'case_condition_id, case_condition-case, case_condition-condition, case_condition-case_condition_type, effective_date, notes', errorIfViolated: 'Incomplete compound; missing required fields' },
-    { id: 'CB13', category: 'Corteza Build', name: 'Import order', description: 'Modules must be ordered by dependency: L1 nodes → L2 type taxonomies → L2 compounds → L3 sub-taxonomies.', exampleWrong: 'Import case_condition before case module', exampleCorrect: 'case → case_type → case_condition → case_condition_type', errorIfViolated: 'Reference failure; dependency not met' },
-    { id: 'CB14', category: 'Corteza Build', name: 'Multi-value field config', description: 'Fields allowing multiple values must set isMulti: true.', exampleWrong: 'person-person_characteristic as single-value Record field', exampleCorrect: '{"name": "person-person_characteristic", "kind": "Record", "isMulti": true}', errorIfViolated: 'Cannot store multiple values; data loss' },
 ];
 
 // ============================================================================
